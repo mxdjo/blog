@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <meta name="author" content="Karan Sharma">
+  
+  <meta name="description" content="Musings of a developer, cyclist and stock market enthusiast">
+  
+  <meta name="keywords" content="blog,developer,personal">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Receiving notifications from Supervisor"/>
+<meta name="twitter:description" content="Supervisor Events I had a seemingly simple task which was to receive notifications any time a process managed by Supervisor restarts. I wanted a generic solution where I could get notifications for any change in the process state. Supervisor Events saved my day, although I would admit it wasn&rsquo;t straightforward to set up.
+Supervisor uses STDIN/STDOUT mechanism to communicate with the event listener. You need to configure your event listener in such a way that it can understand the STDIN sent by Supervisor and also communicate back using STDOUT."/>
+
+
+  <base href="https://mrkaran.dev/posts/supervisor-notifications/">
+  <title>
+  Receiving notifications from Supervisor · Mr Karan - Ramblings on tech,cycling and music
+</title>
+
+  <link rel="canonical" href="https://mrkaran.dev/posts/supervisor-notifications/">
+
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|IBM+Plex+Sans:300,700|Source+Code+Pro:400,700"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css"
+    integrity="sha256-oSrCnRYXvHG31SBifqP2PM1uje7SJUyX0nTwO2RJV54=" crossorigin="anonymous" />
+  <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+  
+  
+  
+  <link rel="stylesheet" href="https://mrkaran.dev/css/coder.min.bb4146d2c2c0f24c52826041dca31eb062d045a37cd3f8952b7cc09fde4613a5.css" integrity="sha256-u0FG0sLA8kxSgmBB3KMesGLQRaN80/iVK3zAn95GE6U="
+    crossorigin="anonymous" media="screen" />
+  
+
+  
+
+  
+
+  
+
+  <link rel="icon" type="image/png" href="https://mrkaran.dev/images/favicon-32x32.png"
+    sizes="32x32">
+  <link rel="icon" type="image/png" href="https://mrkaran.dev/images/favicon-16x16.png"
+    sizes="16x16">
+
+  
+
+  <meta name="generator" content="Hugo 0.54.0" />
+</head>
+
+<body class=" ">
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://mrkaran.dev">
+      Home
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+      
+      <li class="navigation-item">
+        <a class="navigation-link" href="https://mrkaran.dev/about/">About</a>
+      </li>
+      
+      <li class="navigation-item">
+        <a class="navigation-link" href="https://mrkaran.dev/posts/">Blog</a>
+      </li>
+      
+      
+      
+    </ul>
+  </section>
+</nav>
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Receiving notifications from Supervisor</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2018-06-03T10:57:55&#43;05:30'>
+                June 3, 2018
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              5 minutes read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+
+<p><img src="images/supervisor-zine.jpg" alt="Supervisor Events Zine" title="Supervisor Events Zine" /></p>
+
+<h3 id="supervisor-events">Supervisor Events</h3>
+
+<p>I had a seemingly simple task which was to receive notifications any time a process managed by Supervisor restarts. I wanted a generic solution where I could get notifications for any change in the process state. <code>Supervisor Events</code> saved my day, although I would admit it wasn&rsquo;t straightforward to set up.</p>
+
+<p>Supervisor uses <code>STDIN/STDOUT</code> mechanism to communicate with the event listener. You need to configure your event listener in such a way that it can understand the <code>STDIN</code> sent by Supervisor and also communicate back using <code>STDOUT</code>. You can write this event handler in any language you like as long as you conform to the specially formatted messages that Supervisor sends and expects. I had struggled the most at this step and my <code>google-fu</code> didn&rsquo;t help much in this case.</p>
+
+<p>Supervisor by default will send these events even if no listener is configured. Once you have your own listener setup, you can execute any task you want, eg: send email/telegram/slack messages etc.</p>
+
+<p>In order to configure your event listener, you need to add it to your <code>supervisor.conf</code>. Here&rsquo;s an example configuration:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">[eventlistener:wowevent]
+<span style="color:#fb660a">command</span>=/home/work/testevent/test.py
+<span style="color:#fb660a">events</span>=PROCESS_STATE_STARTING
+<span style="color:#fb660a">process_name</span>=%(program_name)s_%(process_num)s
+<span style="color:#fb660a">numprocs</span>=<span style="color:#0086f7;font-weight:bold">1</span>
+<span style="color:#fb660a">autorestart</span>=true
+<span style="color:#fb660a">stderr_logfile</span>=/home/work/testevent/logs/event_err.log
+<span style="color:#fb660a">stdout_logfile</span>=/home/work/testevent/logs/event.log</code></pre></div>
+<p>For the program to know that it has to send a notification at <code>wowevent</code> pool, you need to add the <code>events</code> key to the <code>program</code> section of <code>supervisor.conf</code>.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">[program:myprog]
+...
+<span style="color:#fb660a">events</span>=PROCESS_STATE_STARTING
+...</code></pre></div>
+<p>Now everytime <code>myprog</code> is about to start, it will send an event to <code>wowevent</code> event pool. Your event listener which is configured at <code>/home/work/testevent/test.py</code> will handle the notification and execute tasks which you want to perform.</p>
+
+<p>There are a bunch of event states that Supervisor captures, I was interested in knowing when my process has started, so I used <code>PROCESS_STATE_RUNNING</code>. You can take a look at all different event types <a href="http://supervisord.org/events.html#event-types">here</a>.</p>
+
+<p>During all this experimentation I came across a bug (which I later found it is a <a href="https://github.com/Supervisor/supervisor/issues/339">known issue</a>, and an open bug since 4 years now). If you&rsquo;ve been using Supervisor I am sure at least once you&rsquo;ve been bitten by not <code>rereading</code> the config file and wondering why Supervisor isn&rsquo;t picking up changes in config file when you restart the Supervisor. So <code>reread</code> and <code>update</code> becomes a muscle memory after this event <i class="em em-stuck_out_tongue_closed_eyes"></i>.
+The bug with events is that if you make any changes to the event group, <code>reread</code> doesn&rsquo;t pick up this change. I initially thought this must be the standard way Supervisor is behaving because I didn&rsquo;t change any <code>program</code> group. I randomly decided to change the event listener name and BAM! Supervisor read the new configuration and everything suddenly works! ARGH. Why do complex problems have such simple solutions <i class="em em-smiley"></i> (not a solution, rather a workaround, but you get the drift right?)</p>
+
+<h3 id="supervisor-event-listener-protocol">Supervisor Event Listener Protocol</h3>
+
+<p>Supervisor sends a header which is a key value pair of meta-attributes about the process and event. This header looks something like</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ver:3.0 server:supervisor serial:208 pool:mylistener poolserial:0 eventname:PROCESS_STATE_RUNNING len:69</code></pre></div>
+<p>The event listener <code>mylistener</code> will be in <code>ACKNOWLEDGED</code> state when Supervisor sends the event <code>PROCESS_STATE_RUNNING</code>. Now that the <code>myslistener</code> state has received this <code>ACKNOWLEDGED</code> state, the event listener will send <code>READY</code> back to Supervisor. This is to let Supervisor know that the listener has received the notification.
+Supervisor puts the listener to <code>BUSY</code> state now and here you can do write your custom task. Supervisor waits for the task to get executed and when it does, the listener needs to communicate back with the result. This process is one full request-response cycle.</p>
+
+<p>Let us write a simple Python script which will listen to Supervisor event notification and communicate back, all in a protocol Supervisor understands.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#fb660a;font-weight:bold">import</span> sys
+<span style="color:#fb660a;font-weight:bold">import</span> requests
+
+<span style="color:#fb660a;font-weight:bold">import</span> logging
+logger = logging.getLogger(<span style="color:#0086d2">&#39;event_listener&#39;</span>)
+handler = logging.FileHandler(<span style="color:#0086d2">&#39;/home/user/prod/events/logs/response.log&#39;</span>)
+formatter = logging.Formatter(<span style="color:#0086d2">&#39;</span><span style="color:#0086d2">%(asctime)s</span><span style="color:#0086d2"> </span><span style="color:#0086d2">%(levelname)s</span><span style="color:#0086d2"> </span><span style="color:#0086d2">%(message)s</span><span style="color:#0086d2">&#39;</span>)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)</code></pre></div>
+<p>Here I am just setting up basic logging structure since I want to keep the <code>stdout</code> messages separate from what Supervisor uses.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#fb660a;font-weight:bold">def</span> <span style="color:#ff0086;font-weight:bold">write_stdout</span>(s):
+    <span style="color:#080;background-color:#0f140f;font-style:italic"># only eventlistener protocol messages may be sent to stdout</span>
+    sys.stdout.write(s)
+    sys.stdout.flush()
+
+<span style="color:#fb660a;font-weight:bold">def</span> <span style="color:#ff0086;font-weight:bold">write_stderr</span>(s):
+    sys.stderr.write(s)
+    sys.stderr.flush()</code></pre></div>
+<p>We have written helper functions which will be used to communicate with Supervisor. Now comes the <code>main</code> part (Sorry for bad pun! <i class="em em-blush"></i>)</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#fb660a;font-weight:bold">def</span> <span style="color:#ff0086;font-weight:bold">main</span>():
+    <span style="color:#fb660a;font-weight:bold">while</span> <span style="color:#0086f7;font-weight:bold">1</span>:
+        <span style="color:#080;background-color:#0f140f;font-style:italic"># Hey Supervisor, I&#39;m ready for some action</span>
+        write_stdout(<span style="color:#0086d2">&#39;READY</span><span style="color:#0086d2">\n</span><span style="color:#0086d2">&#39;</span>)
+
+        <span style="color:#080;background-color:#0f140f;font-style:italic"># Reading the header from STDIN</span>
+        line = sys.stdin.readline()
+        write_stderr(line)
+
+        <span style="color:#080;background-color:#0f140f;font-style:italic"># read event payload and print it to stderr</span>
+        headers = dict([ x.split(<span style="color:#0086d2">&#39;:&#39;</span>) <span style="color:#fb660a;font-weight:bold">for</span> x in line.split() ])
+        data = sys.stdin.read(int(headers[<span style="color:#0086d2">&#39;len&#39;</span>]))
+        write_stderr(data)
+
+        <span style="color:#080;background-color:#0f140f;font-style:italic"># add your events here</span>
+        notify_user()
+
+        <span style="color:#080;background-color:#0f140f;font-style:italic"># transition from READY to ACKNOWLEDGED</span>
+        write_stdout(<span style="color:#0086d2">&#39;RESULT 2</span><span style="color:#0086d2">\n</span><span style="color:#0086d2">OK&#39;</span>)
+        logger.debug(<span style="color:#0086d2">&#34;It&#39;s all fine and dandy&#34;</span>)
+
+<span style="color:#fb660a;font-weight:bold">if</span> __name__ == <span style="color:#0086d2">&#39;__main__&#39;</span>:
+    main()</code></pre></div>
+<p>Let us break this into pieces.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">write_stdout(<span style="color:#0086d2">&#39;READY\n&#39;</span>)</code></pre></div>
+<p>We flush <code>READY</code> with a linefeed character (<code>\n</code>) to <code>STDOUT</code>. Supervisor has put mylistener to <code>BUSY</code> state now.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#fb660a">line</span> = sys.stdin.readline()
+write_stderr(line)</code></pre></div>
+<p><code>line</code> would be the header which we discussed previously.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#fb660a">data</span> = sys.stdin.read(int(headers[<span style="color:#0086d2">&#39;len&#39;</span>]))</code></pre></div>
+<p>This part is interesting. Here, we capture the <code>len</code> key from the header and read the next <code>STDIN</code> line up to this many chars. The <code>data</code> would consist of our event payload.
+Event payload looks something like:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">processname:prog-restartv3_0 groupname:prog-restartv3 from_state:STOPPED tries:0ver:3.0 server:supervisor serial:25 pool:prog-restartv3 poolserial:3 eventname:PROCESS_STATE_STARTING len:76<span style="color:#0086d2">`</span></code></pre></div><div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">notify_user()</code></pre></div>
+<p>This is the handler where you can send an email, send a request to API, log it to file etc.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">write_stdout(<span style="color:#0086d2">&#39;RESULT 2</span><span style="color:#0086d2">\n</span><span style="color:#0086d2">OK&#39;</span>)</code></pre></div>
+<p>Finally, we tell Supervisor to put the listener from <code>BUSY</code> to <code>ACKNOWLEDGED</code> state, by sending a result structure. The result could be <code>FAIL</code> or <code>OK</code>, so you need to send <code>RESULT</code> followed by the length of the state variable. For example for <code>OK</code> you will send <code>RESULT 2\nOK</code> but for <code>FAIL</code> you have to send <code>RESULT 4\nFAIL</code>.</p>
+
+<p>That&rsquo;s pretty much all you need to start receiving notifications from Supervisor every time your program changes its state. If you found this article useful, I&rsquo;d love if you share this on <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fmr-karan.github.io%2Fposts%2Fsupervisor-notifications&amp;text=Receiving%20notifications%20from%20Supervisor">Twitter</a> or <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmr-karan.github.io%2Fposts%2Fsupervisor-notifications">Facebook</a> and let your friends know about it too.</p>
+
+      </div>
+
+      <footer>
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    Made with <a href="https://gohugo.io/">Hugo</a> and <i class="em em-heart"></i>
+  </section>
+</footer>
+  </main>
+
+  
+
+</body>
+
+</html>

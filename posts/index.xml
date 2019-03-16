@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Mr Karan - Ramblings on tech,cycling and music</title>
+    <link>https://mrkaran.dev/posts/</link>
+    <description>Recent content in Posts on Mr Karan - Ramblings on tech,cycling and music</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 11 Oct 2018 18:10:55 +0530</lastBuildDate>
+    
+	<atom:link href="https://mrkaran.dev/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Makefile for Golang projects</title>
+      <link>https://mrkaran.dev/posts/makefiles-intro/</link>
+      <pubDate>Thu, 11 Oct 2018 18:10:55 +0530</pubDate>
+      
+      <guid>https://mrkaran.dev/posts/makefiles-intro/</guid>
+      <description>Makefile is an awesome tool to group together a bunch of different rules and automate your build process. Makefile is used by make which is essentially a file generator tool. It is generally used to compile and build programs from source by following rules listed in the Makefile. People use Makefile for a lot of different purposes as well, for example converting md to html and publish these files to the web server.</description>
+    </item>
+    
+    <item>
+      <title>Bi-Weekly Music Post Part 4</title>
+      <link>https://mrkaran.dev/posts/biweekly-music-part-4/</link>
+      <pubDate>Sat, 28 Jul 2018 21:10:55 +0530</pubDate>
+      
+      <guid>https://mrkaran.dev/posts/biweekly-music-part-4/</guid>
+      <description>I am writing this post exactly after 30 days of the last one, caught up with some work and I couldn&amp;rsquo;t write a new post, apologies! To make up for the delay, I have some absolutely gold reccos this time which I believe you will like it.
+Isaac Gracie - reverie 
+Tash Sultana - Jungle 
+18th Dec - Tienas 
+Pareek - Ariana and Amrina, Coke Studio Explorer 2018</description>
+    </item>
+    
+    <item>
+      <title>Bi-Weekly Music Post Part 3</title>
+      <link>https://mrkaran.dev/posts/biweekly-music-part-3/</link>
+      <pubDate>Thu, 28 Jun 2018 21:30:55 +0530</pubDate>
+      
+      <guid>https://mrkaran.dev/posts/biweekly-music-part-3/</guid>
+      <description>Since the past one week, I&amp;rsquo;m having troubles in connecting to Spotify from India and my #1 source for discovering music is gone. I&amp;rsquo;ve started using Saavn but it has crappy recommendations and too much of &amp;ldquo;Bollywoody&amp;rdquo;/crap shit thrown all over. Also, it requires location access to suggest new music. LOL is this a joke or what? Like seriously, can&amp;rsquo;t think of a single reason why a ML algo would require my location to suggest me music.</description>
+    </item>
+    
+    <item>
+      <title>Bi-Weekly Music Post Part 2</title>
+      <link>https://mrkaran.dev/posts/biweekly-music-part-2/</link>
+      <pubDate>Thu, 14 Jun 2018 12:30:55 +0530</pubDate>
+      
+      <guid>https://mrkaran.dev/posts/biweekly-music-part-2/</guid>
+      <description>Ive looped through Nescafe Basement like 100 times the past two weeks and still cant get enough of it. This is the kind of music I like, the kind that just grows on you until you loop endlessly and then hate it 
+Anyway, the following is a list of songs that I have discovered and liked the most in the past two weeks.
+Tattva - aswekeepsearching 
+Koothu Over Coffee - Agam</description>
+    </item>
+    
+    <item>
+      <title>Receiving notifications from Supervisor</title>
+      <link>https://mrkaran.dev/posts/supervisor-notifications/</link>
+      <pubDate>Sun, 03 Jun 2018 10:57:55 +0530</pubDate>
+      
+      <guid>https://mrkaran.dev/posts/supervisor-notifications/</guid>
+      <description>Supervisor Events I had a seemingly simple task which was to receive notifications any time a process managed by Supervisor restarts. I wanted a generic solution where I could get notifications for any change in the process state. Supervisor Events saved my day, although I would admit it wasn&amp;rsquo;t straightforward to set up.
+Supervisor uses STDIN/STDOUT mechanism to communicate with the event listener. You need to configure your event listener in such a way that it can understand the STDIN sent by Supervisor and also communicate back using STDOUT.</description>
+    </item>
+    
+    <item>
+      <title>Bi-Weekly Music Post Part 1</title>
+      <link>https://mrkaran.dev/posts/biweekly-music-part-1/</link>
+      <pubDate>Mon, 28 May 2018 20:30:55 +0530</pubDate>
+      
+      <guid>https://mrkaran.dev/posts/biweekly-music-part-1/</guid>
+      <description>I listen to a lot of music artists while working or otherwise. I plan to share some of the gems I discover each week. Thanks to Spotify and Youtube suggestions, I keep discovering a lot of indie artists and underrated titles. I hope you give them a listen and spread some good music in your circle.
+Tere Jeya Hor Disda 
+Awari 
+Magpie Jay - Bigfoot 
+The Local Train - Dilnawaz</description>
+    </item>
+    
+  </channel>
+</rss>

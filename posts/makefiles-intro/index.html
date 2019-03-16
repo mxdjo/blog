@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <meta name="author" content="Karan Sharma">
+  
+  <meta name="description" content="Musings of a developer, cyclist and stock market enthusiast">
+  
+  <meta name="keywords" content="blog,developer,personal">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Makefile for Golang projects"/>
+<meta name="twitter:description" content="Makefile is an awesome tool to group together a bunch of different rules and automate your build process. Makefile is used by make which is essentially a file generator tool. It is generally used to compile and build programs from source by following rules listed in the Makefile. People use Makefile for a lot of different purposes as well, for example converting md to html and publish these files to the web server."/>
+
+
+  <base href="https://mrkaran.dev/posts/makefiles-intro/">
+  <title>
+  Makefile for Golang projects · Mr Karan - Ramblings on tech,cycling and music
+</title>
+
+  <link rel="canonical" href="https://mrkaran.dev/posts/makefiles-intro/">
+
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|IBM+Plex+Sans:300,700|Source+Code+Pro:400,700"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css"
+    integrity="sha256-oSrCnRYXvHG31SBifqP2PM1uje7SJUyX0nTwO2RJV54=" crossorigin="anonymous" />
+  <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+  
+  
+  
+  <link rel="stylesheet" href="https://mrkaran.dev/css/coder.min.bb4146d2c2c0f24c52826041dca31eb062d045a37cd3f8952b7cc09fde4613a5.css" integrity="sha256-u0FG0sLA8kxSgmBB3KMesGLQRaN80/iVK3zAn95GE6U="
+    crossorigin="anonymous" media="screen" />
+  
+
+  
+
+  
+
+  
+
+  <link rel="icon" type="image/png" href="https://mrkaran.dev/images/favicon-32x32.png"
+    sizes="32x32">
+  <link rel="icon" type="image/png" href="https://mrkaran.dev/images/favicon-16x16.png"
+    sizes="16x16">
+
+  
+
+  <meta name="generator" content="Hugo 0.54.0" />
+</head>
+
+<body class=" ">
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://mrkaran.dev">
+      Home
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+      
+      <li class="navigation-item">
+        <a class="navigation-link" href="https://mrkaran.dev/about/">About</a>
+      </li>
+      
+      <li class="navigation-item">
+        <a class="navigation-link" href="https://mrkaran.dev/posts/">Blog</a>
+      </li>
+      
+      
+      
+    </ul>
+  </section>
+</nav>
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Makefile for Golang projects</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2018-10-11T18:10:55&#43;05:30'>
+                October 11, 2018
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              6 minutes read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+
+<p>Makefile is an awesome tool to group together a bunch of different rules and automate your build process. Makefile is used by <code>make</code> which is essentially a file generator tool. It is generally used to compile and build programs from source by following <code>rules</code> listed in the Makefile. People use Makefile for a lot of different purposes as well, for example converting <code>md</code> to <code>html</code> and publish these files to the web server.</p>
+
+<p>Every makefile you see, is composed of rules. A <code>rule</code> is declaration of a <code>target</code> and the commands to be executed to generate the target. A target can be a file or an action to be performed (more on that later).</p>
+
+<p>This is how a rule looks like in a Makefile</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">target: dependencies
+    recipe</code></pre></div>
+<p>When you run <code>make target</code>, <code>make</code> searches for the rule which begins with this <code>target</code> and executes the dependecies (if required). It then runs a bunch of commands which are listed in the recipe. An important thing to understand here is that <code>make</code> tracks the dependencies by their last modified time. So if the dependencies haven&rsquo;t changed, then make will complain with <code>make: 'target' is up to date.</code></p>
+
+<p>Enough of theory, let&rsquo;s get our feet wet by writing our first Makefile. One important thing about <code>Makefile</code> is that you need to use <code>tabs</code> and not <code>spaces</code>. It is one of the rare <code>*nix</code> programs which is whitespace aware and this has been mentioned in <a href="https://en.wikipedia.org/wiki/The_Unix-Haters_Handbook">The Unix-Haters Handbook</a> as well.</p>
+
+<p>To begin with, let&rsquo;s write a simple rule which removes any tempory object files using <code>go clean</code> and previous binary file using good ol <code>rm</code>:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">clean:
+	go clean
+	rm -f sample.bin</code></pre></div>
+<p>The <code>target</code> here is <code>clean</code>. There is something special going on here though. Imagine we have a file called <code>clean</code> in our source directory? Let us try to run <code>make clean</code> now
+Our directory structure:.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4">├── Makefile
+├── clean
+└── sample.bin</pre></div>
+<p>On running <code>make clean</code>:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4">make: `clean&#39; is up to date.</pre></div>
+<p>Every target in Makefile by default is a <code>file target</code>. In our case <code>clean</code> is a file target and <code>make</code> tries to build this file <code>clean</code> but since we already have a file with the same name <code>clean</code> in our directory, <code>make</code> is complaining there&rsquo;s nothing to do.</p>
+
+<p>Moreover, in this case our rule is more of an <code>action</code> rather than building files. So for all such scenarios, <code>make</code> provides an easy way where we can instruct it to just run the rule and ignore any filename in our directory. This is called a <code>PHONY</code> target which is a special kind of target. <code>PHONY</code> is just a way in <code>make</code> to forcefully run a target and not care about generating files. Our aim with this rule is to run 2 commands and that&rsquo;s about it. So this is the perfect example for using <code>PHONY</code>.
+We can add <code>.PHONY</code> target to our Makefile simply by this line:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.PHONY : clean
+
+clean:
+	go clean
+	rm -f sample.bin</code></pre></div>
+<p>Now when we run <code>make clean</code> we get our expected output</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4">go clean
+rm -f sample.bin</pre></div>
+<p>Let us extend our Makefile to do some common tasks:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.PHONY : build run fresh test clean
+
+test:
+	go test
+
+build:
+	go build
+
+run:
+	./sample.bin
+
+clean:
+	go clean
+	rm -f sample.bin</code></pre></div>
+<p>If you have worked on any Golang project, these are very trivial actions on any Golang project. You will soon realise the power of Makefile when you have to do these steps repeatedly. Some people might argue then you can use aliases or simple shell scripts for the same. I vehemently disagree with that. Reason being, <code>make</code> is a much more powerful tool than just running commands. <code>make</code> has support for dependency tracking and it will only rebuild whatever is required. If you are working on a huge project where the build times are to the tune of hours, you will soon realise why shell scripts are inferior. Ofcourse, someone can point that they can write a shell script to do even that, by fetching the last modified time but why do the extra work when there&rsquo;s an already existing tried and tested tool? <code>make</code> also has support for parallel task execution, so you can just pass the flag <code>-j {num}</code> to <code>make</code> and it will run these {num} jobs parallely. All these benefits will be apparent for larger projects, but it is a good habit to write Makefile even for smaller projects.</p>
+
+<p><img src="https://imgs.xkcd.com/comics/compiling.png" alt="#1 Excuse" title="Look Ma! Code is compiling" /></p>
+
+<p>We will now make our Makefile a bit more sophisticated and introduce variables. If you want to custom name your binary, or <a href="https://blog.cloudflare.com/setting-go-variables-at-compile-time/">inject variables at compile time</a>, you can declare these variables, for example:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">BIN := my-awesome-pro.bin
+HASH := <span style="color:#fb660a;font-weight:bold">$(</span>shell git rev-parse --short HEAD<span style="color:#fb660a;font-weight:bold">)</span>
+COMMIT_DATE := <span style="color:#fb660a;font-weight:bold">$(</span>shell git show -s --format=%ci <span style="color:#0086d2">${</span><span style="color:#fb660a">HASH</span><span style="color:#0086d2">}</span><span style="color:#fb660a;font-weight:bold">)</span>
+BUILD_DATE := <span style="color:#fb660a;font-weight:bold">$(</span>shell date <span style="color:#0086d2">&#39;+%Y-%m-%d %H:%M:%S&#39;</span><span style="color:#fb660a;font-weight:bold">)</span>
+VERSION := <span style="color:#0086d2">${</span><span style="color:#fb660a">HASH</span><span style="color:#0086d2">}</span> (<span style="color:#0086d2">${</span><span style="color:#fb660a">COMMIT_DATE</span><span style="color:#0086d2">}</span>)</code></pre></div>
+<p>We can modify our Makefile to use these variables:</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">build:
+	go build -o <span style="color:#0086d2">${</span><span style="color:#fb660a">BIN</span><span style="color:#0086d2">}</span> -ldflags=<span style="color:#0086d2">&#34;-X &#39;main.buildVersion=</span><span style="color:#0086d2">${</span><span style="color:#fb660a">VERSION</span><span style="color:#0086d2">}</span><span style="color:#0086d2">&#39; -X &#39;main.buildDate=</span><span style="color:#0086d2">${</span><span style="color:#fb660a">BUILD_DATE</span><span style="color:#0086d2">}</span><span style="color:#0086d2">&#39;&#34;</span>
+
+run:
+	./<span style="color:#0086d2">${</span><span style="color:#fb660a">BIN</span><span style="color:#0086d2">}</span>
+
+test:
+	go test
+
+clean:
+	go clean
+	rm -f <span style="color:#0086d2">${</span><span style="color:#fb660a">BIN</span><span style="color:#0086d2">}</span></code></pre></div>
+<p>We can auto version our builds and pass variables during the build time with go linker tool, on passing the <code>-X</code> flag. That&rsquo;s really neat, now whenever we do a <code>make build</code> we get new version of the build automagically.</p>
+
+<p>So now we have a working Makefile which helps us with trivial things, but everytime if we need to change something in our program and check, we still need to do these steps manually: <code>make clean</code>, <code>make build</code> and <code>make run</code>. Won&rsquo;t it be awesome if we could tell Makefile to do all this with just one command? Programmers are lazy creatures after all <i class="em em-smiley"></i>.</p>
+
+<p>In the beginning we saw a target is composed of recipe and dependencies. So we can just create a new <code>PHONY</code> target with all these dependencies and any recipe if we want optionally.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">fresh: clean build run</code></pre></div>
+<p>We created a new <code>target</code> which depends on <code>clean</code> to run first, then <code>build</code> and finally <code>run</code>. So everytime if we make some change in our Go program, all we need to run is <code>make fresh</code>. Awesome, isn&rsquo;t it?</p>
+
+<p>We will finally add our last target which is a highly opinionated way of generating binaries for different OS and architectures.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">prod:
+	goreleaser --rm-dist --snapshot
+	cp dist/linux_amd64/<span style="color:#0086d2">${</span><span style="color:#fb660a">BIN</span><span style="color:#0086d2">}</span>-linux.bin .
+	rm -rf dist</code></pre></div>
+<p>This target runs <code>goreleaser</code> which is a build automation tool. It then copies the required linux binary to the source directory and removes all the other junk.</p>
+
+<p>You can even extend your Makefile to commit files to a repo, and rsync these binaries to the production server or initiate your CI/CD build process. The reason I like Makefile is because it serves as a living documentation for your project on how to build/deploy the project making it easier for new contributors to get started.</p>
+
+<h5 id="some-additional-information">Some additional information</h5>
+
+<ul>
+<li><p>If you run <code>make</code> without passing any target name, <code>make</code> will run the first target present in the Makefile. To override this, you should set <code>.DEFAULT_GOAL</code> setting and <a href="https://www.gnu.org/software/make/manual/html_node/Special-Variables.html#Special-Variables">override the target</a> which you want to make as default.</p></li>
+
+<li><p><code>.PHONY</code> is just one way to tell <code>make</code> that it is a special kind of target, you can also do the same by creating a target without any recipe. Read <a href="https://www.gnu.org/software/make/manual/html_node/Force-Targets.html#Force-Targets">this</a> to know more.</p></li>
+</ul>
+
+<p>To know more about <code>Makefile</code>, you can read the manual <a href="https://www.gnu.org/software/make/manual/make.html">here</a></p>
+
+<p>I hope you now appreciate <code>Makefile</code> and try it out in your next project. I&rsquo;d love feedback on this blog post, do reach me out at <a href="https://twitter.com/mrkaran_">twitter</a> or <a href="mailto:karansharma1295@gmail.com">email</a></p>
+
+<p>Fin!</p>
+
+      </div>
+
+      <footer>
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    Made with <a href="https://gohugo.io/">Hugo</a> and <i class="em em-heart"></i>
+  </section>
+</footer>
+  </main>
+
+  
+
+</body>
+
+</html>

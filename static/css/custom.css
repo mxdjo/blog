@@ -60,3 +60,7 @@ blockquote {
   position: relative;
   letter-spacing: 1px;
 }
+
+.header nav.social a:hover {
+  color: #F8481C;
+}

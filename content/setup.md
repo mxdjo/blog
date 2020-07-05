@@ -2,6 +2,7 @@
 title: "My Setup"
 type: "page"
 images: ["/images/night-setup.jpg"]
+description: "Detailing my work desk setup"
 ---
 
 ![image](/images/day-setup.jpg)

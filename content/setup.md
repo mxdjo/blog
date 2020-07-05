@@ -1,6 +1,7 @@
 ---
 title: "My Setup"
 type: "page"
+images: ["/images/night-setup.jpg"]
 ---
 
 ![image](/images/day-setup.jpg)

@@ -51,6 +51,11 @@ name = "Contact"
 url = "/contact"
 weight = 5
 
+[[menu.main]]
+name = "Setup"
+url = "/setup"
+weight = 5
+
 # Social media links which shows up on site header.
 # Uses feather icons for icons. You can [search icon names from here](https://feathericons.com/).
 [[params.social]]

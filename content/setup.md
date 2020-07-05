@@ -86,7 +86,7 @@ I pair `zsh` with [starship](https://starship.rs/) which makes the entire termin
 
 It took me a good amount of experimentation with different apps, peripherals and distro-hopping but I finally feel like my current workflow is reliable and something that won't require any tweaking for a good amount of time. Shortly, I'd like to figure out a setup to automate my backups from my self hosted `git` server as well as set up a Nextcloud WebDAV to get rid of Joplin's Dropbox sync.
 
-But that's for some other day, the weather in Bengaluru is amazing for a month like June, so I'd make some hot ginger tea and enjoy the rainy evening for now.
+But that's for some other day, the weather in Bengaluru is amazing for a month like June, so I'll make some hot ginger tea and enjoy the rainy evening for now.
 
 Also, bonus picture. This is how my setup looks at night!
 
